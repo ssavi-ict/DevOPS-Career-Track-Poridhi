@@ -1,0 +1,406 @@
+Project Started Here
+
+avik@AvikLinux:~/Desktop$ sudo ip link add veth0 type veth peer name veth1
+
+[sudo] password for avik: 
+
+avik@AvikLinux:~/Desktop$ ip link show veth0
+
+4: veth0@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+
+    link/ether 66:b8:cb:5a:98:03 brd ff:ff:ff:ff:ff:ff
+
+avik@AvikLinux:~/Desktop$ ip link show veth1
+
+3: veth1@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+
+    link/ether 1a:61:b6:f5:54:7e brd ff:ff:ff:ff:ff:ff
+
+avik@AvikLinux:~/Desktop$ 
+
+avik@AvikLinux:~/Desktop$ 
+
+avik@AvikLinux:~/Desktop$ 
+
+
+avik@AvikLinux:~/Desktop$ sudo ip netns add red
+
+
+
+avik@AvikLinux:~/Desktop$ sudo ip link set veth0 netns red
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red addr add 10.0.1.0/24 dev veth0
+
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red link set veth0 up
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red link set lo up
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red addr show
+
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+
+    inet 127.0.0.1/8 scope host lo
+
+       valid_lft forever preferred_lft forever
+
+    inet6 ::1/128 scope host 
+
+       valid_lft forever preferred_lft forever
+
+4: veth0@if3: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state LOWERLAYERDOWN group default qlen 1000
+
+    link/ether 66:b8:cb:5a:98:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+
+    inet 10.0.1.0/24 scope global veth0
+
+       valid_lft forever preferred_lft forever
+
+avik@AvikLinux:~/Desktop$ ip link show veth0
+
+Device "veth0" does not exist.
+
+avik@AvikLinux:~/Desktop$ sudo ip link show veth0
+
+Device "veth0" does not exist.
+
+avik@AvikLinux:~/Desktop$ ping -c10.0.1.0
+
+ping: invalid argument: '10.0.1.0'
+
+avik@AvikLinux:~/Desktop$ ping -c 10.0.1.0
+
+ping: invalid argument: '10.0.1.0'
+
+avik@AvikLinux:~/Desktop$ ping -c10 10.0.1.0
+
+PING 10.0.1.0 (10.0.1.0) 56(84) bytes of data.
+
+
+
+--- 10.0.1.0 ping statistics ---
+
+10 packets transmitted, 0 received, 100% packet loss, time 9268ms
+
+
+
+avik@AvikLinux:~/Desktop$ sudo ip net
+
+netconf  netns    
+
+avik@AvikLinux:~/Desktop$ sudo ip netns exec red ping -c10 10.0.1.0
+
+PING 10.0.1.0 (10.0.1.0) 56(84) bytes of data.
+
+64 bytes from 10.0.1.0: icmp_seq=1 ttl=64 time=0.023 ms
+
+64 bytes from 10.0.1.0: icmp_seq=2 ttl=64 time=0.026 ms
+
+64 bytes from 10.0.1.0: icmp_seq=3 ttl=64 time=0.024 ms
+
+64 bytes from 10.0.1.0: icmp_seq=4 ttl=64 time=0.022 ms
+
+64 bytes from 10.0.1.0: icmp_seq=5 ttl=64 time=0.023 ms
+
+64 bytes from 10.0.1.0: icmp_seq=6 ttl=64 time=0.024 ms
+
+64 bytes from 10.0.1.0: icmp_seq=7 ttl=64 time=0.060 ms
+
+64 bytes from 10.0.1.0: icmp_seq=8 ttl=64 time=0.024 ms
+
+64 bytes from 10.0.1.0: icmp_seq=9 ttl=64 time=0.025 ms
+
+64 bytes from 10.0.1.0: icmp_seq=10 ttl=64 time=0.023 ms
+
+
+
+--- 10.0.1.0 ping statistics ---
+
+10 packets transmitted, 10 received, 0% packet loss, time 9220ms
+
+rtt min/avg/max/mdev = 0.022/0.027/0.060/0.010 ms
+
+avik@AvikLinux:~/Desktop$ 
+
+avik@AvikLinux:~/Desktop$ 
+
+avik@AvikLinux:~/Desktop$ 
+
+avik@AvikLinux:~/Desktop$ sudo ip netns add green
+
+avik@AvikLinux:~/Desktop$ sudo ip link set veth1 netns green
+
+avik@AvikLinux:~/Desktop$ sudo ip -n green addr add 10.0.2.0/24 dev veth1
+
+avik@AvikLinux:~/Desktop$ sudo ip -n green link set veth1 up
+
+avik@AvikLinux:~/Desktop$ sudo ip -n green link set lo up
+
+avik@AvikLinux:~/Desktop$ sudo ip -n green addr show
+
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+
+    inet 127.0.0.1/8 scope host lo
+
+       valid_lft forever preferred_lft forever
+
+    inet6 ::1/128 scope host 
+
+       valid_lft forever preferred_lft forever
+
+3: veth1@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+
+    link/ether 1a:61:b6:f5:54:7e brd ff:ff:ff:ff:ff:ff link-netns red
+
+    inet 10.0.2.0/24 scope global veth1
+
+       valid_lft forever preferred_lft forever
+
+    inet6 fe80::1861:b6ff:fef5:547e/64 scope link 
+
+       valid_lft forever preferred_lft forever
+
+avik@AvikLinux:~/Desktop$ ip link show veth1
+
+Device "veth1" does not exist.
+
+avik@AvikLinux:~/Desktop$ ping -c10 10.0.2.0
+
+PING 10.0.2.0 (10.0.2.0) 56(84) bytes of data.
+
+From 10.0.2.15 icmp_seq=1 Destination Host Unreachable
+
+From 10.0.2.15 icmp_seq=2 Destination Host Unreachable
+
+From 10.0.2.15 icmp_seq=3 Destination Host Unreachable
+
+From 10.0.2.15 icmp_seq=4 Destination Host Unreachable
+
+From 10.0.2.15 icmp_seq=5 Destination Host Unreachable
+
+From 10.0.2.15 icmp_seq=6 Destination Host Unreachable
+
+From 10.0.2.15 icmp_seq=7 Destination Host Unreachable
+
+From 10.0.2.15 icmp_seq=8 Destination Host Unreachable
+
+From 10.0.2.15 icmp_seq=9 Destination Host Unreachable
+
+From 10.0.2.15 icmp_seq=10 Destination Host Unreachable
+
+
+
+--- 10.0.2.0 ping statistics ---
+
+10 packets transmitted, 0 received, +10 errors, 100% packet loss, time 9276ms
+
+pipe 4
+
+avik@AvikLinux:~/Desktop$ sudo ip
+
+ip                           ip6tables-restore            ippeveprinter                iptables-nft
+
+ip6tables                    ip6tables-restore-translate  ippfind                      iptables-nft-restore
+
+ip6tables-apply              ip6tables-save               ipptool                      iptables-nft-save
+
+ip6tables-legacy             ip6tables-translate          ipp-usb                      iptables-restore
+
+ip6tables-legacy-restore     ipcmk                        iptables                     iptables-restore-translate
+
+ip6tables-legacy-save        ipcrm                        iptables-apply               iptables-save
+
+ip6tables-nft                ipcs                         iptables-legacy              iptables-translate
+
+ip6tables-nft-restore        ipod-read-sysinfo-extended   iptables-legacy-restore      iptables-xml
+
+ip6tables-nft-save           ipod-time-sync               iptables-legacy-save         
+
+avik@AvikLinux:~/Desktop$ sudo ip
+
+ip                           ip6tables-restore            ippeveprinter                iptables-nft
+
+ip6tables                    ip6tables-restore-translate  ippfind                      iptables-nft-restore
+
+ip6tables-apply              ip6tables-save               ipptool                      iptables-nft-save
+
+ip6tables-legacy             ip6tables-translate          ipp-usb                      iptables-restore
+
+ip6tables-legacy-restore     ipcmk                        iptables                     iptables-restore-translate
+
+ip6tables-legacy-save        ipcrm                        iptables-apply               iptables-save
+
+ip6tables-nft                ipcs                         iptables-legacy              iptables-translate
+
+ip6tables-nft-restore        ipod-read-sysinfo-extended   iptables-legacy-restore      iptables-xml
+
+ip6tables-nft-save           ipod-time-sync               iptables-legacy-save         
+
+avik@AvikLinux:~/Desktop$ sudo ip netns exec green ping -c10 10.0.2.0
+
+PING 10.0.2.0 (10.0.2.0) 56(84) bytes of data.
+
+64 bytes from 10.0.2.0: icmp_seq=1 ttl=64 time=0.019 ms
+
+64 bytes from 10.0.2.0: icmp_seq=2 ttl=64 time=0.026 ms
+
+64 bytes from 10.0.2.0: icmp_seq=3 ttl=64 time=0.024 ms
+
+64 bytes from 10.0.2.0: icmp_seq=4 ttl=64 time=0.024 ms
+
+64 bytes from 10.0.2.0: icmp_seq=5 ttl=64 time=0.027 ms
+
+64 bytes from 10.0.2.0: icmp_seq=6 ttl=64 time=0.027 ms
+
+64 bytes from 10.0.2.0: icmp_seq=7 ttl=64 time=0.024 ms
+
+64 bytes from 10.0.2.0: icmp_seq=8 ttl=64 time=0.025 ms
+
+64 bytes from 10.0.2.0: icmp_seq=9 ttl=64 time=0.043 ms
+
+64 bytes from 10.0.2.0: icmp_seq=10 ttl=64 time=0.024 ms
+
+
+
+--- 10.0.2.0 ping statistics ---
+
+10 packets transmitted, 10 received, 0% packet loss, time 9254ms
+
+rtt min/avg/max/mdev = 0.019/0.026/0.043/0.006 ms
+
+avik@AvikLinux:~/Desktop$ sudo ip netns exec green ping -c10 10.0.1.0
+
+ping: connect: Network is unreachable
+
+avik@AvikLinux:~/Desktop$ sudo ip netns exec red ping -c10 10.0.2.0
+
+ping: connect: Network is unreachable
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red route 10.0.2.0
+
+Command "10.0.2.0" is unknown, try "ip route help".
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red route get 10.0.2.0
+
+RTNETLINK answers: Network is unreachable
+
+avik@AvikLinux:~/Desktop$ sudo ip -n green route get 10.0.1.0
+
+RTNETLINK answers: Network is unreachable
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red route
+
+10.0.1.0/24 dev veth0 proto kernel scope link src 10.0.1.0 
+
+avik@AvikLinux:~/Desktop$ sudo ip -n green route
+
+10.0.2.0/24 dev veth1 proto kernel scope link src 10.0.2.0 
+
+avik@AvikLinux:~/Desktop$ 
+
+avik@AvikLinux:~/Desktop$ 
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red route add 10.0.2.0/24 dev veth0
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red route get 10.0.1.0
+
+local 10.0.1.0 dev lo src 10.0.1.0 uid 0 
+
+    cache <local> 
+
+avik@AvikLinux:~/Desktop$ sudo ip -n green route add 10.0.1.0/24 dev veth1
+
+[sudo] password for avik: 
+
+avik@AvikLinux:~/Desktop$ sudo ip -n green route get 10.0.1.0
+
+10.0.1.0 dev veth1 src 10.0.2.0 uid 0 
+
+    cache 
+
+avik@AvikLinux:~/Desktop$ sudo ip -n red route get 10.0.2.0
+
+10.0.2.0 dev veth0 src 10.0.1.0 uid 0 
+
+    cache 
+
+avik@AvikLinux:~/Desktop$ ip netns exec red -c10 10.0.2.0
+
+setting the network namespace "red" failed: Operation not permitted
+
+avik@AvikLinux:~/Desktop$ sudo ip netns exec red -c10 10.0.2.0
+
+exec of "-c10" failed: No such file or directory
+
+avik@AvikLinux:~/Desktop$ sudo ip netns exec red ping -c10 10.0.2.0
+
+PING 10.0.2.0 (10.0.2.0) 56(84) bytes of data.
+
+64 bytes from 10.0.2.0: icmp_seq=1 ttl=64 time=0.034 ms
+
+64 bytes from 10.0.2.0: icmp_seq=2 ttl=64 time=0.122 ms
+
+64 bytes from 10.0.2.0: icmp_seq=3 ttl=64 time=0.031 ms
+
+64 bytes from 10.0.2.0: icmp_seq=4 ttl=64 time=0.044 ms
+
+64 bytes from 10.0.2.0: icmp_seq=5 ttl=64 time=0.037 ms
+
+64 bytes from 10.0.2.0: icmp_seq=6 ttl=64 time=0.030 ms
+
+64 bytes from 10.0.2.0: icmp_seq=7 ttl=64 time=0.030 ms
+
+64 bytes from 10.0.2.0: icmp_seq=8 ttl=64 time=0.031 ms
+
+64 bytes from 10.0.2.0: icmp_seq=9 ttl=64 time=0.030 ms
+
+64 bytes from 10.0.2.0: icmp_seq=10 ttl=64 time=0.030 ms
+
+
+
+--- 10.0.2.0 ping statistics ---
+
+10 packets transmitted, 10 received, 0% packet loss, time 9221ms
+
+rtt min/avg/max/mdev = 0.030/0.041/0.122/0.027 ms
+
+avik@AvikLinux:~/Desktop$ sudo ip netns exec green ping -c10 10.0.1.0
+
+PING 10.0.1.0 (10.0.1.0) 56(84) bytes of data.
+
+64 bytes from 10.0.1.0: icmp_seq=1 ttl=64 time=0.022 ms
+
+64 bytes from 10.0.1.0: icmp_seq=2 ttl=64 time=0.029 ms
+
+64 bytes from 10.0.1.0: icmp_seq=3 ttl=64 time=0.054 ms
+
+64 bytes from 10.0.1.0: icmp_seq=4 ttl=64 time=0.031 ms
+
+64 bytes from 10.0.1.0: icmp_seq=5 ttl=64 time=0.075 ms
+
+64 bytes from 10.0.1.0: icmp_seq=6 ttl=64 time=0.110 ms
+
+64 bytes from 10.0.1.0: icmp_seq=7 ttl=64 time=0.036 ms
+
+64 bytes from 10.0.1.0: icmp_seq=8 ttl=64 time=0.113 ms
+
+64 bytes from 10.0.1.0: icmp_seq=9 ttl=64 time=0.050 ms
+
+64 bytes from 10.0.1.0: icmp_seq=10 ttl=64 time=0.030 ms
+
+
+
+--- 10.0.1.0 ping statistics ---
+
+10 packets transmitted, 10 received, 0% packet loss, time 9199ms
+
+rtt min/avg/max/mdev = 0.022/0.055/0.113/0.031 ms
+
+
+
+
+
