@@ -1,4 +1,4 @@
-# Assignment 2: Integrate VM with flask web app
+# Assignment 2: Integrate VNET with flask web app
 
 # Run This Application
 1. Using Terminal:
