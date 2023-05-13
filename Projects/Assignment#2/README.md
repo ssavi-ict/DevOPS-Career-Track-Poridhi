@@ -3,7 +3,7 @@
 # Run This Application
 1. Using Terminal:
 - Open a Terminal.
-- Move to `~/DevOPS-Career-Track-Poridhi/Projects/Assigment#2/`
+- Move to `~/DevOPS-Career-Track-Poridhi/Projects/Assignment#2/`
 - Enter following commands
 ```commandline
 $ export flask_application=app.py
@@ -18,6 +18,14 @@ Press CTRL+C to quit
 2. Using Pycharm
 - Open the project in Pycharm
 - Run `app.py`
+- You should see output on Pycharm console - 
+```text
+ * Running on http://127.0.0.1:2349
+ * Running on http://<your_ip_address>:2349
+ .....
+Press CTRL+C to quit
+```
+
 
 # Verify 
 - Go to your web browser.
