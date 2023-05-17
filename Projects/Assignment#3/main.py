@@ -1,7 +1,5 @@
 import socket
 import struct
-from struct import *
-import sys
 
 
 # Unpack Ethernet Frame
@@ -30,10 +28,20 @@ def get_ip_address(address):
 
 
 def main():
+    # Socket is a Python Library to create Raw socket.
+    # Socket is something that opens up the interface to play with network in local or foreign level
+    # socket has several Param -
+    # family - A socket interface which family we should consider. Essentially indicates in which layer our socket should work.
+    # type - Means what type of data it should collect. In our case it will be Raw data.
+    # proto - Which protocol to be captured. 3 Means Ethernet Protocol. We need IPv4 and MAC address (ARP)
     conn = socket.socket(family=socket.AF_PACKET, type=socket.SOCK_RAW, proto=socket.ntohs(3))
     while True:
+        # 65535 = How many bytes of data should be captured in a single network call.
+        # raw_data = Raw Byte Object, address = source address
         raw_data, address = conn.recvfrom(65535)
+        # Method to get mac address, protocol, rest of the information
         dest_mac, src_mac, proto, data = parse_header(raw_data=raw_data)
+        # Method to get IP version, header_length, Time To Live, Source and Dest MAC, Data
         version, header_length, ttl, proto, start_ip, dest_ip, data = get_ipv4_packet(data=data)
         print("\n========= L2 Frame ==============")
         print("Source Mac: ", src_mac)
