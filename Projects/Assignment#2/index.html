@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TAB System</title>
+    <style>
+        body{
+            text-align: center;
+            margin-top: 20%;
+        }
+
+        .root {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .tab {
+            display: none;
+        }
+    </style>
+    <script>
+        function openTab(tabName) {
+            var i, tabContent;
+            tabContent = document.getElementsByClassName("tab");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+            document.getElementById(tabName).style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <h1>TAB System</h1>
+    <div class = "root">
+      <button onclick="openTab('createTab')">Create</button>
+      <button onclick="openTab('deleteTab')">Delete</button>
+      <button onclick="openTab('viewTab')">View</button>
+
+      <div id="createTab" class="tab">
+          <h2>Create</h2>
+          <textarea id="createTextArea"></textarea>
+          <button onclick="create()">CREATE</button>
+          <div id="createOutput"></div>
+      </div>
+
+      <div id="deleteTab" class="tab">
+          <h2>Delete</h2>
+          <input type="radio" name="deleteOption" value="deleteOne" onclick="showDeleteOne()">Delete One<br>
+          <div id="deleteOne">
+              <input type="text" id="deleteOneInput" placeholder="Enter ID">
+              <textarea id="deleteOneTextArea"></textarea>
+              <button onclick="deleteOne()">Delete One</button>
+          </div>
+          <input type="radio" name="deleteOption" value="deleteMy" onclick="showDeleteMy()">Delete My<br>
+          <div id="deleteMy">
+              <textarea id="deleteMyTextArea"></textarea>
+              <button onclick="deleteMy()">Delete My</button>
+          </div>
+          <input type="radio" name="deleteOption" value="deleteAll" onclick="showDeleteAll()">Delete All<br>
+          <div id="deleteAll">
+              <textarea id="deleteAllTextArea"></textarea>
+              <button onclick="deleteAll()">Delete All</button>
+          </div>
+      </div>
+
+      <div id="viewTab" class="tab">
+          <h2>View</h2>
+          <input type="radio" name="viewOption" value="viewMy" onclick="showViewMy()">View My<br>
+          <div id="viewMy">
+              <textarea id="viewMyTextArea"></textarea>
+              <button onclick="viewMy()">View My</button>
+          </div>
+          <input type="radio" name="viewOption" value="viewAll" onclick="showViewAll()">View All<br>
+          <div id="viewAll">
+              <textarea id="viewAllTextArea"></textarea>
+              <button onclick="viewAll()">View All</button>
+          </div>
+      </div>
+    </div>
+
+    <script>
+        function create() {
+            var output = document.getElementById("createOutput");
+            var text = document.getElementById("createTextArea").value;
+            output.innerHTML = "Create output: " + text;
+        }
+
+        function showDeleteOne() {
+            document.getElementById("deleteOne").style.display = "block";
+            document.getElementById("deleteMy").style.display = "none";
+            document.getElementById("deleteAll").style.display = "none";
+        }
+
+        function showDeleteMy() {
+            document.getElementById("deleteOne").style.display = "none";
+            document.getElementById("deleteMy").style.display = "block";
+            document.getElementById("deleteAll").style
+            .display = "none";
+        }
+
+        function showDeleteAll() {
+            document.getElementById("deleteOne").style.display = "none";
+            document.getElementById("deleteMy").style.display = "none";
+            document.getElementById("deleteAll").style.display = "block";
+        }
+
+        function deleteOne() {
+            var output = document.getElementById("deleteOneTextArea");
+            var input = document.getElementById("deleteOneInput").value;
+            output.innerHTML = "Delete One output: " + input;
+        }
+
+        function deleteMy() {
+            var output = document.getElementById("deleteMyTextArea");
+            output.innerHTML = "Delete My output";
+        }
+
+        function deleteAll() {
+            var output = document.getElementById("deleteAllTextArea");
+            output.innerHTML = "Delete All output";
+        }
+
+        function showViewMy() {
+            document.getElementById("viewMy").style.display = "block";
+            document.getElementById("viewAll").style.display = "none";
+        }
+
+        function showViewAll() {
+            document.getElementById("viewMy").style.display = "none";
+            document.getElementById("viewAll").style.display = "block";
+        }
+
+        function viewMy() {
+            var output = document.getElementById("viewMyTextArea");
+            output.innerHTML = "View My output";
+        }
+
+        function viewAll() {
+            var output = document.getElementById("viewAllTextArea");
+            output.innerHTML = "View All output";
+        }
+    </script>
+</body>
+</html>
