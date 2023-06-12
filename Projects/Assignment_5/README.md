@@ -1,3 +1,19 @@
 # Full Stack Application Development
 
 Basic Full Stack Application - Class Work + Exam Excercise.
+
+
+### test connection
+GET http://localhost:5000/
+
+### get news connection
+GET http://localhost:5000/get
+
+
+### create a news
+POST http://localhost:5000/create
+Content-Type: application/json
+
+{
+  "text": "another data"
+}

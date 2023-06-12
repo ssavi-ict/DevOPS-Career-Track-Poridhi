@@ -1,7 +1,7 @@
-export const News = ({text}) => {
-    return(
-        <article className="bg-white shadow-md rounded-md pbg-white shadow-md rounded-md p-4 my-4">
-            <p>{text}</p>
-        </article>
-    )
+export const News = ({ text }) => {
+  return (
+    <article className="bg-white shadow-md rounded-md p-4 my-4">
+      <p>{text}</p>
+    </article>
+  );
 };
