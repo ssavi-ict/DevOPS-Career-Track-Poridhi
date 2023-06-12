@@ -1,12 +1,12 @@
 ### test connection
-GET http://localhost:5000/
+GET http://localhost:5029/
 
 ### get news connection
-GET http://localhost:5000/get
+GET http://localhost:5029/get
 
 
 ### create a news
-POST http://localhost:5000/create
+POST http://localhost:5029/create
 Content-Type: application/json
 
 {

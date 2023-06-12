@@ -1,7 +1,7 @@
 "use strict";
 
 // configs
-export const PORT = 5000;
+export const PORT = 5029;
 
 // db configs
 const sqlHost = "localhost";
@@ -17,3 +17,12 @@ export const dbConfigs = {
   password: sqlPassword,
   database: sqlDatabase,
 };
+
+// redis configs
+const redisUsername = process.env.REDIS_USERNAME || "";
+const redisPassword = process.env.REDIS_PASSWORD || "password";
+const redisHost = process.env.REDIS_HOST || "localhost";
+const redisPort = process.env.REDIS_PORT || "6379";
+
+const redisUrl = `redis://${redisUsername}:${redisPassword}@${redisHost}:${redisPort}`;
+export const redisConfigs = {url: redisUrl};
