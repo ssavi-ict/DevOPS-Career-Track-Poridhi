@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import { PORT } from "./configs.js";
 import { addNewsToDB, getNewsFromDB } from "./db.js";
-import { addNewsToCache, getNewsFromCache, deleteNewsFromCache } from "./redis.js";
+import { addNewsToCache, getNewsFromCache, publishNews } from "./redis.js";
 
 // base express app
 const app = express();
@@ -26,6 +26,7 @@ app.get("/get", async(_, res) =>{
       return await addNewsToCache(news);
     }
     console.log('Trying to get From Cache');
+    console.log(cachedNews);
     res.status(200).send({isCached: true, news: cachedNews});
   } catch (error) {
     res.status(500).send({message: "Error Getting News"});
@@ -36,8 +37,7 @@ app.get("/get", async(_, res) =>{
 app.post("/create", async(req, res) => {
   try {
     const {text} = req.body;
-    await addNewsToDB(text);
-    await deleteNewsFromCache();
+    await publishNews(text);
     res.status(201).send({message: "News Created Successfully"});
   } catch (error) {
     res.status(500).send({message: "Error Creating News"});

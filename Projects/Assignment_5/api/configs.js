@@ -23,6 +23,7 @@ const redisUsername = process.env.REDIS_USERNAME || "";
 const redisPassword = process.env.REDIS_PASSWORD || "password";
 const redisHost = process.env.REDIS_HOST || "localhost";
 const redisPort = process.env.REDIS_PORT || "6379";
+export const redisChannel = process.env.REDUS_CHANNEL || "channel1";
 
 const redisUrl = `redis://${redisUsername}:${redisPassword}@${redisHost}:${redisPort}`;
 export const redisConfigs = {url: redisUrl};

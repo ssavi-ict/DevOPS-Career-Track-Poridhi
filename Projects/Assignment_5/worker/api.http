@@ -1,0 +1,14 @@
+### test connection
+GET http://localhost:5029/
+
+### get news connection
+GET http://localhost:5029/get
+
+
+### create a news
+POST http://localhost:5029/create
+Content-Type: application/json
+
+{
+  "text": "Worker Server Text"
+}
