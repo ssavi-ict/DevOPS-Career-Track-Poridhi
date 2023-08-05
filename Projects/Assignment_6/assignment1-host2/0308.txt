@@ -1,0 +1,127 @@
+
+user@SSAVI MINGW64 ~/Documents/Vagrant/assignment1-host2
+$ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+==> default: Checking if box 'ubuntu/bionic64' version '20230607.0.0' is up to date...
+==> default: Resuming suspended VM...
+==> default: Booting VM...
+==> default: Waiting for machine to boot. This may take a few minutes...
+    default: SSH address: 127.0.0.1:2200
+    default: SSH username: vagrant
+    default: SSH auth method: private key
+==> default: Machine booted and ready!
+==> default: Machine already provisioned. Run `vagrant provision` or use the `--provision`
+==> default: flag to force provisioning. Provisioners marked to run always will still run.
+
+user@SSAVI MINGW64 ~/Documents/Vagrant/assignment1-host2
+$ vagrant ssh
+Welcome to Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-212-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Wed Aug  2 15:59:28 UTC 2023
+
+  System load:     0.23              IP address for enp0s3:  10.0.2.15
+  Usage of /:      4.5% of 38.70GB   IP address for enp0s8:  192.168.33.11
+  Memory usage:    26%               IP address for docker0: 172.17.0.1
+  Swap usage:      0%                IP address for veth0:   192.168.1.1
+  Processes:       108               IP address for veth1:   192.168.2.1
+  Users logged in: 0
+
+
+Expanded Security Maintenance for Infrastructure is not enabled.
+
+11 updates can be applied immediately.
+10 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+49 additional security updates can be applied with ESM Infra.
+Learn more about enabling ESM Infra service for Ubuntu 18.04 at
+https://ubuntu.com/18-04
+
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+
+Last login: Tue Aug  1 01:53:10 2023 from 10.0.2.2
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ping 192.168.1.12 -c 5
+PING 192.168.1.12 (192.168.1.12) 56(84) bytes of data.
+64 bytes from 192.168.1.12: icmp_seq=1 ttl=64 time=0.013 ms
+64 bytes from 192.168.1.12: icmp_seq=2 ttl=64 time=0.059 ms
+64 bytes from 192.168.1.12: icmp_seq=3 ttl=64 time=0.045 ms
+64 bytes from 192.168.1.12: icmp_seq=4 ttl=64 time=0.058 ms
+64 bytes from 192.168.1.12: icmp_seq=5 ttl=64 time=0.023 ms
+
+--- 192.168.1.12 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4420ms
+rtt min/avg/max/mdev = 0.013/0.039/0.059/0.018 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ping 192.168.1.11 -c 5
+PING 192.168.1.11 (192.168.1.11) 56(84) bytes of data.
+64 bytes from 192.168.1.11: icmp_seq=1 ttl=64 time=0.467 ms
+64 bytes from 192.168.1.11: icmp_seq=2 ttl=64 time=0.779 ms
+64 bytes from 192.168.1.11: icmp_seq=3 ttl=64 time=1.24 ms
+64 bytes from 192.168.1.11: icmp_seq=4 ttl=64 time=1.16 ms
+64 bytes from 192.168.1.11: icmp_seq=5 ttl=64 time=1.88 ms
+
+--- 192.168.1.11 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4112ms
+rtt min/avg/max/mdev = 0.467/1.103/1.876/0.475 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ping 192.168.2.11 -c 5
+^C
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ping 192.168.2.12 -c 5
+^C
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ping 192.168.2.11 -c 5
+PING 192.168.2.11 (192.168.2.11) 56(84) bytes of data.
+64 bytes from 192.168.2.11: icmp_seq=1 ttl=64 time=0.391 ms
+64 bytes from 192.168.2.11: icmp_seq=2 ttl=64 time=0.626 ms
+64 bytes from 192.168.2.11: icmp_seq=3 ttl=64 time=0.452 ms
+64 bytes from 192.168.2.11: icmp_seq=4 ttl=64 time=0.629 ms
+64 bytes from 192.168.2.11: icmp_seq=5 ttl=64 time=1.32 ms
+
+--- 192.168.2.11 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4269ms
+rtt min/avg/max/mdev = 0.391/0.684/1.323/0.332 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ping 192.168.2.12 -c 5
+PING 192.168.2.12 (192.168.2.12) 56(84) bytes of data.
+64 bytes from 192.168.2.12: icmp_seq=1 ttl=64 time=0.015 ms
+64 bytes from 192.168.2.12: icmp_seq=2 ttl=64 time=0.059 ms
+64 bytes from 192.168.2.12: icmp_seq=3 ttl=64 time=0.025 ms
+64 bytes from 192.168.2.12: icmp_seq=4 ttl=64 time=0.057 ms
+64 bytes from 192.168.2.12: icmp_seq=5 ttl=64 time=0.023 ms
+
+--- 192.168.2.12 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4077ms
+rtt min/avg/max/mdev = 0.015/0.035/0.059/0.018 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ping 192.168.1.11 -c 5
+^C
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ping 192.168.1.12 -c 5
+^C
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ exit
+logout
+Connection to 127.0.0.1 closed.
+
+user@SSAVI MINGW64 ~/Documents/Vagrant/assignment1-host2
+$

@@ -1,0 +1,729 @@
+
+user@SSAVI MINGW64 ~/Documents/Vagrant/assignment1-host2
+$ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+==> default: Checking if box 'ubuntu/bionic64' version '20230607.0.0' is up to date...
+==> default: Clearing any previously set forwarded ports...
+==> default: Fixed port collision for 22 => 2222. Now on port 2200.
+==> default: Clearing any previously set network interfaces...
+==> default: Preparing network interfaces based on configuration...
+    default: Adapter 1: nat
+    default: Adapter 2: hostonly
+==> default: Forwarding ports...
+    default: 22 (guest) => 2200 (host) (adapter 1)
+==> default: Running 'pre-boot' VM customizations...
+==> default: Booting VM...
+==> default: Waiting for machine to boot. This may take a few minutes...
+    default: SSH address: 127.0.0.1:2200
+    default: SSH username: vagrant
+    default: SSH auth method: private key
+    default: Warning: Remote connection disconnect. Retrying...
+==> default: Machine booted and ready!
+==> default: Checking for guest additions in VM...
+    default: The guest additions on this VM do not match the installed version of
+    default: VirtualBox! In most cases this is fine, but in rare cases it can
+    default: prevent things such as shared folders from working properly. If you see
+    default: shared folder errors, please make sure the guest additions within the
+    default: virtual machine match the version of VirtualBox you have installed on
+    default: your host and reload your VM.
+    default:
+    default: Guest Additions Version: 5.2.42
+    default: VirtualBox Version: 7.0
+==> default: Configuring and enabling network interfaces...
+==> default: Mounting shared folders...
+    default: /vagrant => C:/Users/user/Documents/Vagrant/assignment1-host2
+==> default: Machine already provisioned. Run `vagrant provision` or use the `--provision`
+==> default: flag to force provisioning. Provisioners marked to run always will still run.
+
+user@SSAVI MINGW64 ~/Documents/Vagrant/assignment1-host2
+$ vagrant ssh
+Welcome to Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-212-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Tue Aug  1 01:53:10 UTC 2023
+
+  System load:  1.24              Users logged in:        0
+  Usage of /:   4.2% of 38.70GB   IP address for enp0s3:  10.0.2.15
+  Memory usage: 17%               IP address for enp0s8:  192.168.33.11
+  Swap usage:   0%                IP address for docker0: 172.17.0.1
+  Processes:    103
+
+
+Expanded Security Maintenance for Infrastructure is not enabled.
+
+11 updates can be applied immediately.
+10 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+46 additional security updates can be applied with ESM Infra.
+Learn more about enabling ESM Infra service for Ubuntu 18.04 at
+https://ubuntu.com/18-04
+
+New release '20.04.6 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+Last login: Mon Jul 31 18:17:48 2023 from 10.0.2.2
+vagrant@ubuntu-bionic:~$ ping 192.168.33.10 -c 5
+PING 192.168.33.10 (192.168.33.10) 56(84) bytes of data.
+64 bytes from 192.168.33.10: icmp_seq=1 ttl=64 time=0.416 ms
+64 bytes from 192.168.33.10: icmp_seq=2 ttl=64 time=0.857 ms
+64 bytes from 192.168.33.10: icmp_seq=3 ttl=64 time=0.865 ms
+64 bytes from 192.168.33.10: icmp_seq=4 ttl=64 time=1.11 ms
+64 bytes from 192.168.33.10: icmp_seq=5 ttl=64 time=2.05 ms
+
+--- 192.168.33.10 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4232ms
+rtt min/avg/max/mdev = 0.416/1.060/2.056/0.547 ms
+vagrant@ubuntu-bionic:~$ sudo -i
+root@ubuntu-bionic:~#
+root@ubuntu-bionic:~#
+root@ubuntu-bionic:~#
+root@ubuntu-bionic:~# apt update
+Hit:1 http://archive.ubuntu.com/ubuntu bionic InRelease
+Get:2 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
+Get:3 http://security.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
+Get:4 http://archive.ubuntu.com/ubuntu bionic-backports InRelease [83.3 kB]
+Fetched 261 kB in 6s (40.5 kB/s)
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+7 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@ubuntu-bionic:~# apt -y install net-tools docker.io openvswitch-switch
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+net-tools is already the newest version (1.60+git20161116.90da8a0-1ubuntu1).
+openvswitch-switch is already the newest version (2.9.8-0ubuntu0.18.04.5).
+docker.io is already the newest version (20.10.21-0ubuntu1~18.04.3).
+0 upgraded, 0 newly installed, 0 to remove and 7 not upgraded.
+root@ubuntu-bionic:~#
+root@ubuntu-bionic:~#
+root@ubuntu-bionic:~# ovs-vsctl add-br ovs-br0
+root@ubuntu-bionic:~# ovs-vsctl add-br ovs-br1
+root@ubuntu-bionic:~# ovs-vsctl show
+c9ee9d6b-33ed-4609-ab98-0154afa560e2
+    Bridge "ovs-br0"
+        Port "ovs-br0"
+            Interface "ovs-br0"
+                type: internal
+    Bridge "ovs-br1"
+        Port "ovs-br1"
+            Interface "ovs-br1"
+                type: internal
+    ovs_version: "2.9.8"
+root@ubuntu-bionic:~# exit
+logout
+vagrant@ubuntu-bionic:~$ sudo ovs-vsctl add-port ovs-br0 veth0 -- set interface veth0 type=internal
+vagrant@ubuntu-bionic:~$ sudo ovs-vsctl add-port ovs-br1 veth1 -- set interface veth1 type=internal
+vagrant@ubuntu-bionic:~$ sudo ovs-vsctl show
+c9ee9d6b-33ed-4609-ab98-0154afa560e2
+    Bridge "ovs-br0"
+        Port "veth0"
+            Interface "veth0"
+                type: internal
+        Port "ovs-br0"
+            Interface "ovs-br0"
+                type: internal
+    Bridge "ovs-br1"
+        Port "veth1"
+            Interface "veth1"
+                type: internal
+        Port "ovs-br1"
+            Interface "ovs-br1"
+                type: internal
+    ovs_version: "2.9.8"
+vagrant@ubuntu-bionic:~$ sudo ip address add 192.168.1.1/24 dev veth0
+vagrant@ubuntu-bionic:~$ sudo ip address add 192.168.2.1/24 dev veth1
+vagrant@ubuntu-bionic:~$ sudo ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 02:3b:7b:b7:3b:2d brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic enp0s3
+       valid_lft 86045sec preferred_lft 86045sec
+    inet6 fe80::3b:7bff:feb7:3b2d/64 scope link
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:82:97:b5 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.33.11/24 brd 192.168.33.255 scope global enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe82:97b5/64 scope link
+       valid_lft forever preferred_lft forever
+4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:9a:e3:82:e8 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+5: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether b6:10:f8:b5:98:e4 brd ff:ff:ff:ff:ff:ff
+6: ovs-br0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 16:0f:91:74:a5:45 brd ff:ff:ff:ff:ff:ff
+7: ovs-br1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether ba:dc:15:9c:e4:41 brd ff:ff:ff:ff:ff:ff
+8: veth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 32:ce:7f:12:64:3b brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.1/24 scope global veth0
+       valid_lft forever preferred_lft forever
+9: veth1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 7e:17:31:d8:1a:24 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.2.1/24 scope global veth1
+       valid_lft forever preferred_lft forever
+vagrant@ubuntu-bionic:~$ sudo ip link set dev veth0 up mtu 1450
+vagrant@ubuntu-bionic:~$ sudo ip link set dev veth1 up mtu 1450
+vagrant@ubuntu-bionic:~$ sudo ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 02:3b:7b:b7:3b:2d brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic enp0s3
+       valid_lft 85995sec preferred_lft 85995sec
+    inet6 fe80::3b:7bff:feb7:3b2d/64 scope link
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:82:97:b5 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.33.11/24 brd 192.168.33.255 scope global enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe82:97b5/64 scope link
+       valid_lft forever preferred_lft forever
+4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:9a:e3:82:e8 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+5: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether b6:10:f8:b5:98:e4 brd ff:ff:ff:ff:ff:ff
+6: ovs-br0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 16:0f:91:74:a5:45 brd ff:ff:ff:ff:ff:ff
+7: ovs-br1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether ba:dc:15:9c:e4:41 brd ff:ff:ff:ff:ff:ff
+8: veth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 32:ce:7f:12:64:3b brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.1/24 scope global veth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::30ce:7fff:fe12:643b/64 scope link
+       valid_lft forever preferred_lft forever
+9: veth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 7e:17:31:d8:1a:24 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.2.1/24 scope global veth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::7c17:31ff:fed8:1a24/64 scope link
+       valid_lft forever preferred_lft forever
+vagrant@ubuntu-bionic:~$ touch Dockerfile
+vagrant@ubuntu-bionic:~$ vi Dockerfile
+vagrant@ubuntu-bionic:~$ cat Dockerfile
+FROM ubuntu
+
+RUN apt update
+RUN apt install -y net-tools
+RUN apt install -y iproute2
+RUN apt install -y iputils-ping
+
+CMD ["sleep", "7200"]
+
+vagrant@ubuntu-bionic:~$ sudo docker build . -t ubuntu-docker
+Sending build context to Docker daemon  15.36kB
+Step 1/6 : FROM ubuntu
+latest: Pulling from library/ubuntu
+3153aa388d02: Pull complete
+Digest: sha256:0bced47fffa3361afa981854fcabcd4577cd43cebbb808cea2b1f33a3dd7f508
+Status: Downloaded newer image for ubuntu:latest
+ ---> 5a81c4b8502e
+Step 2/6 : RUN apt update
+ ---> Running in 5d4e908d9da6
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Get:1 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
+Get:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]
+Get:4 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [848 kB]
+Get:5 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [108 kB]
+Get:6 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+Get:7 http://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1792 kB]
+Get:8 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [44.0 kB]
+Get:9 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [818 kB]
+Get:10 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [975 kB]
+Get:11 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+Get:12 http://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [49.8 kB]
+Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1231 kB]
+Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [865 kB]
+Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [1091 kB]
+Get:17 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [25.6 kB]
+Get:18 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [49.4 kB]
+Fetched 26.3 MB in 12s (2140 kB/s)
+Reading package lists...
+Building dependency tree...
+Reading state information...
+3 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Removing intermediate container 5d4e908d9da6
+ ---> 33d8b8f65ece
+Step 3/6 : RUN apt install -y net-tools
+ ---> Running in 155e666afdd7
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  net-tools
+0 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.
+Need to get 204 kB of archives.
+After this operation, 819 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 net-tools amd64 1.60+git20181103.0eebece-1ubuntu5 [204 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 204 kB in 3s (59.9 kB/s)
+Selecting previously unselected package net-tools.
+(Reading database ... 4395 files and directories currently installed.)
+Preparing to unpack .../net-tools_1.60+git20181103.0eebece-1ubuntu5_amd64.deb ...
+Unpacking net-tools (1.60+git20181103.0eebece-1ubuntu5) ...
+Setting up net-tools (1.60+git20181103.0eebece-1ubuntu5) ...
+Removing intermediate container 155e666afdd7
+ ---> ff938f5a1c43
+Step 4/6 : RUN apt install -y iproute2
+ ---> Running in 7146bca2ca01
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  libatm1 libbpf0 libbsd0 libcap2-bin libelf1 libmd0 libmnl0 libpam-cap
+  libxtables12
+Suggested packages:
+  iproute2-doc
+The following NEW packages will be installed:
+  iproute2 libatm1 libbpf0 libbsd0 libcap2-bin libelf1 libmd0 libmnl0
+  libpam-cap libxtables12
+0 upgraded, 10 newly installed, 0 to remove and 3 not upgraded.
+Need to get 1430 kB of archives.
+After this operation, 4151 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libelf1 amd64 0.186-1build1 [51.0 kB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libbpf0 amd64 1:0.5.0-1ubuntu22.04.1 [140 kB]
+Get:3 http://archive.ubuntu.com/ubuntu jammy/main amd64 libmd0 amd64 1.0.4-1build1 [23.0 kB]
+Get:4 http://archive.ubuntu.com/ubuntu jammy/main amd64 libbsd0 amd64 0.11.5-1 [44.8 kB]
+Get:5 http://archive.ubuntu.com/ubuntu jammy/main amd64 libmnl0 amd64 1.0.4-3build2 [13.2 kB]
+Get:6 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libxtables12 amd64 1.8.7-1ubuntu5.1 [31.2 kB]
+Get:7 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libcap2-bin amd64 1:2.44-1ubuntu0.22.04.1 [26.0 kB]
+Get:8 http://archive.ubuntu.com/ubuntu jammy/main amd64 iproute2 amd64 5.15.0-1ubuntu2 [1070 kB]
+Get:9 http://archive.ubuntu.com/ubuntu jammy/main amd64 libatm1 amd64 1:2.5.1-4build2 [22.8 kB]
+Get:10 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpam-cap amd64 1:2.44-1ubuntu0.22.04.1 [7928 B]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 1430 kB in 4s (321 kB/s)
+Selecting previously unselected package libelf1:amd64.
+(Reading database ... 4444 files and directories currently installed.)
+Preparing to unpack .../0-libelf1_0.186-1build1_amd64.deb ...
+Unpacking libelf1:amd64 (0.186-1build1) ...
+Selecting previously unselected package libbpf0:amd64.
+Preparing to unpack .../1-libbpf0_1%3a0.5.0-1ubuntu22.04.1_amd64.deb ...
+Unpacking libbpf0:amd64 (1:0.5.0-1ubuntu22.04.1) ...
+Selecting previously unselected package libmd0:amd64.
+Preparing to unpack .../2-libmd0_1.0.4-1build1_amd64.deb ...
+Unpacking libmd0:amd64 (1.0.4-1build1) ...
+Selecting previously unselected package libbsd0:amd64.
+Preparing to unpack .../3-libbsd0_0.11.5-1_amd64.deb ...
+Unpacking libbsd0:amd64 (0.11.5-1) ...
+Selecting previously unselected package libmnl0:amd64.
+Preparing to unpack .../4-libmnl0_1.0.4-3build2_amd64.deb ...
+Unpacking libmnl0:amd64 (1.0.4-3build2) ...
+Selecting previously unselected package libxtables12:amd64.
+Preparing to unpack .../5-libxtables12_1.8.7-1ubuntu5.1_amd64.deb ...
+Unpacking libxtables12:amd64 (1.8.7-1ubuntu5.1) ...
+Selecting previously unselected package libcap2-bin.
+Preparing to unpack .../6-libcap2-bin_1%3a2.44-1ubuntu0.22.04.1_amd64.deb ...
+Unpacking libcap2-bin (1:2.44-1ubuntu0.22.04.1) ...
+Selecting previously unselected package iproute2.
+Preparing to unpack .../7-iproute2_5.15.0-1ubuntu2_amd64.deb ...
+Unpacking iproute2 (5.15.0-1ubuntu2) ...
+Selecting previously unselected package libatm1:amd64.
+Preparing to unpack .../8-libatm1_1%3a2.5.1-4build2_amd64.deb ...
+Unpacking libatm1:amd64 (1:2.5.1-4build2) ...
+Selecting previously unselected package libpam-cap:amd64.
+Preparing to unpack .../9-libpam-cap_1%3a2.44-1ubuntu0.22.04.1_amd64.deb ...
+Unpacking libpam-cap:amd64 (1:2.44-1ubuntu0.22.04.1) ...
+Setting up libatm1:amd64 (1:2.5.1-4build2) ...
+Setting up libcap2-bin (1:2.44-1ubuntu0.22.04.1) ...
+Setting up libmnl0:amd64 (1.0.4-3build2) ...
+Setting up libxtables12:amd64 (1.8.7-1ubuntu5.1) ...
+Setting up libmd0:amd64 (1.0.4-1build1) ...
+Setting up libbsd0:amd64 (0.11.5-1) ...
+Setting up libelf1:amd64 (0.186-1build1) ...
+Setting up libpam-cap:amd64 (1:2.44-1ubuntu0.22.04.1) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (TERM is not set, so the dialog frontend is not usable.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.34.0 /usr/local/share/perl/5.34.0 /usr/lib/x86_64-linux-gnu/perl5/5.34 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.34 /usr/share/perl/5.34 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 7.)
+debconf: falling back to frontend: Teletype
+Setting up libbpf0:amd64 (1:0.5.0-1ubuntu22.04.1) ...
+Setting up iproute2 (5.15.0-1ubuntu2) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (TERM is not set, so the dialog frontend is not usable.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.34.0 /usr/local/share/perl/5.34.0 /usr/lib/x86_64-linux-gnu/perl5/5.34 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.34 /usr/share/perl/5.34 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 7.)
+debconf: falling back to frontend: Teletype
+Processing triggers for libc-bin (2.35-0ubuntu3.1) ...
+Removing intermediate container 7146bca2ca01
+ ---> e9a5e96fb979
+Step 5/6 : RUN apt install -y iputils-ping
+ ---> Running in 899c454b32fb
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  iputils-ping
+0 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.
+Need to get 42.9 kB of archives.
+After this operation, 116 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 iputils-ping amd64 3:20211215-1 [42.9 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 42.9 kB in 3s (13.8 kB/s)
+Selecting previously unselected package iputils-ping.
+(Reading database ... 4688 files and directories currently installed.)
+Preparing to unpack .../iputils-ping_3%3a20211215-1_amd64.deb ...
+Unpacking iputils-ping (3:20211215-1) ...
+Setting up iputils-ping (3:20211215-1) ...
+Removing intermediate container 899c454b32fb
+ ---> 8d92f4b255c8
+Step 6/6 : CMD ["sleep", "7200"]
+ ---> Running in bea493a46911
+Removing intermediate container bea493a46911
+ ---> 7eee4ac80c41
+Successfully built 7eee4ac80c41
+Successfully tagged ubuntu-docker:latest
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker run -d --net=none --name docker3 ubuntu-docker
+34713eb4d4d871a153c83ad52493616e319b44f8063d66b0d6e02eb2009cb17b
+vagrant@ubuntu-bionic:~$ sudo docker run -d --net=none --name docker4 ubuntu-docker
+9deea2671c303a115ceae0ffd3149318f683ba4f47adc90a96c998b75e302dfe
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker ps
+CONTAINER ID   IMAGE           COMMAND        CREATED          STATUS          PORTS     NAMES
+9deea2671c30   ubuntu-docker   "sleep 7200"   5 seconds ago    Up 5 seconds              docker4
+34713eb4d4d8   ubuntu-docker   "sleep 7200"   19 seconds ago   Up 18 seconds             docker3
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo ovs-docker add-port ovs-br0 eth0 docker3 --ipaddress=192.168.1.12/24 --gateway=192.168.1.1
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+18: eth0@if19: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 4e:db:39:49:ad:e5 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 192.168.1.12/24 scope global eth0
+       valid_lft forever preferred_lft forever
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo ovs-docker add-port ovs-br1 eth0 docker4 --ipaddress=192.168.2.12/24 --gateway=192.168.2.1
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ip a                          1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+20: eth0@if21: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 4a:11:6d:6a:e4:a9 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 192.168.2.12/24 scope global eth0
+       valid_lft forever preferred_lft forever
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ping 192.168.1.1 -c 5
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.238 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.045 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.038 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.037 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.037 ms
+
+--- 192.168.1.1 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4084ms
+rtt min/avg/max/mdev = 0.037/0.079/0.238/0.079 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ping 192.168.2.1 -c 5
+PING 192.168.2.1 (192.168.2.1) 56(84) bytes of data.
+64 bytes from 192.168.2.1: icmp_seq=1 ttl=64 time=0.320 ms
+64 bytes from 192.168.2.1: icmp_seq=2 ttl=64 time=0.093 ms
+64 bytes from 192.168.2.1: icmp_seq=3 ttl=64 time=0.080 ms
+64 bytes from 192.168.2.1: icmp_seq=4 ttl=64 time=0.076 ms
+64 bytes from 192.168.2.1: icmp_seq=5 ttl=64 time=0.096 ms
+
+--- 192.168.2.1 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4209ms
+rtt min/avg/max/mdev = 0.076/0.133/0.320/0.093 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo ip
+Usage: ip [ OPTIONS ] OBJECT { COMMAND | help }
+       ip [ -force ] -batch filename
+where  OBJECT := { link | address | addrlabel | route | rule | neigh | ntable |
+                   tunnel | tuntap | maddress | mroute | mrule | monitor | xfrm |
+                   netns | l2tp | fou | macsec | tcp_metrics | token | netconf | ila |
+                   vrf | sr }
+       OPTIONS := { -V[ersion] | -s[tatistics] | -d[etails] | -r[esolve] |
+                    -h[uman-readable] | -iec |
+                    -f[amily] { inet | inet6 | ipx | dnet | mpls | bridge | link } |
+                    -4 | -6 | -I | -D | -B | -0 |
+                    -l[oops] { maximum-addr-flush-attempts } | -br[ief] |
+                    -o[neline] | -t[imestamp] | -ts[hort] | -b[atch] [filename] |
+                    -rc[vbuf] [size] | -n[etns] name | -a[ll] | -c[olor]}
+vagrant@ubuntu-bionic:~$ sudo ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 02:3b:7b:b7:3b:2d brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic enp0s3
+       valid_lft 84807sec preferred_lft 84807sec
+    inet6 fe80::3b:7bff:feb7:3b2d/64 scope link
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:82:97:b5 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.33.11/24 brd 192.168.33.255 scope global enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe82:97b5/64 scope link
+       valid_lft forever preferred_lft forever
+4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:9a:e3:82:e8 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:9aff:fee3:82e8/64 scope link
+       valid_lft forever preferred_lft forever
+5: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether b6:10:f8:b5:98:e4 brd ff:ff:ff:ff:ff:ff
+6: ovs-br0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 16:0f:91:74:a5:45 brd ff:ff:ff:ff:ff:ff
+7: ovs-br1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether ba:dc:15:9c:e4:41 brd ff:ff:ff:ff:ff:ff
+8: veth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 32:ce:7f:12:64:3b brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.1/24 scope global veth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::30ce:7fff:fe12:643b/64 scope link
+       valid_lft forever preferred_lft forever
+9: veth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 7e:17:31:d8:1a:24 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.2.1/24 scope global veth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::7c17:31ff:fed8:1a24/64 scope link
+       valid_lft forever preferred_lft forever
+19: e02ec546eb6c4_l@if18: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP group default qlen 1000
+    link/ether b2:97:9b:e3:3e:7b brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b097:9bff:fee3:3e7b/64 scope link
+       valid_lft forever preferred_lft forever
+21: ad7694f08bf24_l@if20: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP group default qlen 1000
+    link/ether 96:c1:9d:8c:3f:16 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::94c1:9dff:fe8c:3f16/64 scope link
+       valid_lft forever preferred_lft forever
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo ovs-vsctl add-port ovs-br0 vxlan0 -- set interface vxlan0 type=vxlan options:remote_ip=192.168.33.10 options:key=1000
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo ovs-vsctl add-port ovs-br1 vxlan1 -- set interface vxlan1 type=vxlan options:remote_ip=192.168.33.10 options:key=2000
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ netstat -ntulp
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      -
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -
+tcp        0      0 127.0.0.1:35483         0.0.0.0:*               LISTEN      -
+tcp6       0      0 :::22                   :::*                    LISTEN      -
+udp        0      0 127.0.0.53:53           0.0.0.0:*                           -
+udp        0      0 10.0.2.15:68            0.0.0.0:*                           -
+udp        0      0 0.0.0.0:4789            0.0.0.0:*                           -
+udp6       0      0 :::4789                 :::*                                -
+vagrant@ubuntu-bionic:~$ sudo ovs-vsctl show
+c9ee9d6b-33ed-4609-ab98-0154afa560e2
+    Bridge "ovs-br0"
+        Port "veth0"
+            Interface "veth0"
+                type: internal
+        Port "ovs-br0"
+            Interface "ovs-br0"
+                type: internal
+        Port "vxlan0"
+            Interface "vxlan0"
+                type: vxlan
+                options: {key="1000", remote_ip="192.168.33.10"}
+        Port "e02ec546eb6c4_l"
+            Interface "e02ec546eb6c4_l"
+    Bridge "ovs-br1"
+        Port "veth1"
+            Interface "veth1"
+                type: internal
+        Port "vxlan1"
+            Interface "vxlan1"
+                type: vxlan
+                options: {key="2000", remote_ip="192.168.33.10"}
+        Port "ad7694f08bf24_l"
+            Interface "ad7694f08bf24_l"
+        Port "ovs-br1"
+            Interface "ovs-br1"
+                type: internal
+    ovs_version: "2.9.8"
+vagrant@ubuntu-bionic:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 02:3b:7b:b7:3b:2d brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic enp0s3
+       valid_lft 84317sec preferred_lft 84317sec
+    inet6 fe80::3b:7bff:feb7:3b2d/64 scope link
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:82:97:b5 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.33.11/24 brd 192.168.33.255 scope global enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe82:97b5/64 scope link
+       valid_lft forever preferred_lft forever
+4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:9a:e3:82:e8 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:9aff:fee3:82e8/64 scope link
+       valid_lft forever preferred_lft forever
+5: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether b6:10:f8:b5:98:e4 brd ff:ff:ff:ff:ff:ff
+6: ovs-br0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 16:0f:91:74:a5:45 brd ff:ff:ff:ff:ff:ff
+7: ovs-br1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether ba:dc:15:9c:e4:41 brd ff:ff:ff:ff:ff:ff
+8: veth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 32:ce:7f:12:64:3b brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.1/24 scope global veth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::30ce:7fff:fe12:643b/64 scope link
+       valid_lft forever preferred_lft forever
+9: veth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 7e:17:31:d8:1a:24 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.2.1/24 scope global veth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::7c17:31ff:fed8:1a24/64 scope link
+       valid_lft forever preferred_lft forever
+19: e02ec546eb6c4_l@if18: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP group default qlen 1000
+    link/ether b2:97:9b:e3:3e:7b brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b097:9bff:fee3:3e7b/64 scope link
+       valid_lft forever preferred_lft forever
+21: ad7694f08bf24_l@if20: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master ovs-system state UP group default qlen 1000
+    link/ether 96:c1:9d:8c:3f:16 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::94c1:9dff:fe8c:3f16/64 scope link
+       valid_lft forever preferred_lft forever
+22: vxlan_sys_4789: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 65000 qdisc noqueue master ovs-system state UNKNOWN group default qlen 1000
+    link/ether 3a:3f:42:f9:7f:ec brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::383f:42ff:fef9:7fec/64 scope link
+       valid_lft forever preferred_lft forever
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ping 192.168.1.12 -c 5
+PING 192.168.1.12 (192.168.1.12) 56(84) bytes of data.
+64 bytes from 192.168.1.12: icmp_seq=1 ttl=64 time=0.013 ms
+64 bytes from 192.168.1.12: icmp_seq=2 ttl=64 time=0.059 ms
+64 bytes from 192.168.1.12: icmp_seq=3 ttl=64 time=0.045 ms
+64 bytes from 192.168.1.12: icmp_seq=4 ttl=64 time=0.058 ms
+64 bytes from 192.168.1.12: icmp_seq=5 ttl=64 time=0.023 ms
+
+--- 192.168.1.12 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4420ms
+rtt min/avg/max/mdev = 0.013/0.039/0.059/0.018 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ping 192.168.1.11 -c 5
+PING 192.168.1.11 (192.168.1.11) 56(84) bytes of data.
+64 bytes from 192.168.1.11: icmp_seq=1 ttl=64 time=0.467 ms
+64 bytes from 192.168.1.11: icmp_seq=2 ttl=64 time=0.779 ms
+64 bytes from 192.168.1.11: icmp_seq=3 ttl=64 time=1.24 ms
+64 bytes from 192.168.1.11: icmp_seq=4 ttl=64 time=1.16 ms
+64 bytes from 192.168.1.11: icmp_seq=5 ttl=64 time=1.88 ms
+
+--- 192.168.1.11 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4112ms
+rtt min/avg/max/mdev = 0.467/1.103/1.876/0.475 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ping 192.168.2.11 -c 5
+^C
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker3 ping 192.168.2.12 -c 5
+^C
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ping 192.168.2.11 -c 5
+PING 192.168.2.11 (192.168.2.11) 56(84) bytes of data.
+64 bytes from 192.168.2.11: icmp_seq=1 ttl=64 time=0.391 ms
+64 bytes from 192.168.2.11: icmp_seq=2 ttl=64 time=0.626 ms
+64 bytes from 192.168.2.11: icmp_seq=3 ttl=64 time=0.452 ms
+64 bytes from 192.168.2.11: icmp_seq=4 ttl=64 time=0.629 ms
+64 bytes from 192.168.2.11: icmp_seq=5 ttl=64 time=1.32 ms
+
+--- 192.168.2.11 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4269ms
+rtt min/avg/max/mdev = 0.391/0.684/1.323/0.332 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ping 192.168.2.12 -c 5
+PING 192.168.2.12 (192.168.2.12) 56(84) bytes of data.
+64 bytes from 192.168.2.12: icmp_seq=1 ttl=64 time=0.015 ms
+64 bytes from 192.168.2.12: icmp_seq=2 ttl=64 time=0.059 ms
+64 bytes from 192.168.2.12: icmp_seq=3 ttl=64 time=0.025 ms
+64 bytes from 192.168.2.12: icmp_seq=4 ttl=64 time=0.057 ms
+64 bytes from 192.168.2.12: icmp_seq=5 ttl=64 time=0.023 ms
+
+--- 192.168.2.12 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4077ms
+rtt min/avg/max/mdev = 0.015/0.035/0.059/0.018 ms
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ping 192.168.1.11 -c 5
+^C
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$
+vagrant@ubuntu-bionic:~$ sudo docker exec docker4 ping 192.168.1.12 -c 5
+^C
+vagrant@ubuntu-bionic:~$
